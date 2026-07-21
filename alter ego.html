@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Fenrir | Terminal de Activación</title>
+    <style>
+        /* --- RESET Y BASE --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #05080a;
+            background-image: radial-gradient(circle at 20% 30%, rgba(0, 255, 200, 0.03) 0%, transparent 30%),
+                              radial-gradient(circle at 80% 70%, rgba(100, 200, 255, 0.04) 0%, transparent 40%);
+            color: #c8d6e0;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .terminal-wrapper {
+            max-width: 950px;
+            width: 100%;
+            background-color: rgba(8, 12, 16, 0.85);
+            backdrop-filter: blur(2px);
+            border: 1px solid #2a3a40;
+            border-radius: 16px;
+            padding: 30px 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 180, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .terminal-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,
+                    transparent 0px,
+                    transparent 3px,
+                    rgba(0, 255, 255, 0.008) 3px,
+                    rgba(0, 255, 255, 0.008) 4px);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* --- HEADER --- */
+        .sys-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #1a2a30;
+            margin-bottom: 25px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .sys-header .left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .sys-header h1 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            color: #e8f5f9;
+            text-shadow: 0 0 20px rgba(0, 200, 255, 0.3), 0 0 60px rgba(0, 100, 200, 0.1);
+            margin: 0;
+        }
+        .sys-header .subtitle {
+            color: #4a7a8a;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sys-header .subtitle .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #00ffaa;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #00ffaa;
+            animation: pulse-dot 1.8s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+
+        .btn-logros {
+            background: transparent;
+            border: 1px solid #3a5a6a;
+            color: #7a9aa5;
+            padding: 8px 18px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+        .btn-logros:hover {
+            background: #1a2a30;
+            color: #c8d6e0;
+            border-color: #6ae2ff;
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.1);
+        }
+        .btn-logros .badge {
+            background: #ffd966;
+            color: #0b1318;
+            border-radius: 50%;
+            padding: 0px 8px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 6px;
+        }
+
+        /* --- MENÚ PRINCIPAL --- */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+            transition: opacity 0.3s ease;
+        }
+        .menu-card {
+            background: #0b1318;
+            border: 1px solid #1f2f35;
+            border-left: 6px solid #2a4a55;
+            padding: 18px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 4px;
+            transition: all 0.25s ease;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .menu-card:hover {
+            border-left-color: #6ae2ff;
+            background: #0f1a20;
+            transform: translateX(6px);
+            box-shadow: 0 0 25px rgba(0, 180, 255, 0.08);
+        }
+        .menu-info h2 {
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: #e0f0f5;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+        .menu-info h2 small {
+            font-size: 0.7rem;
+            color: #4a7a8a;
+            margin-left: 10px;
+            font-weight: 100;
+        }
+        .menu-info p {
+            font-size: 0.85rem;
+            color: #7a9aa5;
+            margin: 0;
+        }
+        .menu-stats {
+            font-size: 0.75rem;
+            color: #4a7a8a;
+            margin-top: 4px;
+            display: flex;
+            gap: 18px;
+        }
+        .menu-stats span {
+            background: #0f1a20;
+            padding: 2px 10px;
+            border-radius: 12px;
+            border: 1px solid #1a2a30;
+        }
+        .menu-stats .count {
+            color: #6ae2ff;
+        }
+        .btn-activar {
+            background: transparent;
+            color: #b0dae5;
+            border: 1px solid #3a6a7a;
+            padding: 10px 24px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .btn-activar:hover {
+            background: #6ae2ff;
+            color: #0b1318;
+            border-color: #6ae2ff;
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.3);
+        }
+        .btn-activar:active { transform: scale(0.96); }
+
+        /* --- LOADER --- */
+        .activation-loader {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            text-align: center;
+            animation: fadeIn 0.4s ease;
+        }
+        .activation-loader .loader-title {
+            font-size: 1.6rem;
+            text-transform: uppercase;
+            color: #9acfdf;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+        }
+        .activation-loader .loader-sub {
+            color: #4a7a8a;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        .progress-track {
+            width: 100%;
+            max-width: 500px;
+            height: 6px;
+            background: #1a2a30;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00d4ff, #00ffaa);
+            border-radius: 10px;
+            box-shadow: 0 0 20px #00d4ffaa;
+            transition: width 0.15s linear;
+        }
+        .loader-log {
+            width: 100%;
+            max-width: 600px;
+            background: #050a0e;
+            border: 1px solid #1a2a30;
+            border-radius: 4px;
+            padding: 15px 20px;
+            min-height: 80px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            color: #7a9aa5;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            scrollbar-width: thin;
+            scrollbar-color: #2a4a55 #0b1318;
+        }
+        .loader-log::-webkit-scrollbar { width: 4px; }
+        .loader-log::-webkit-scrollbar-track { background: #0b1318; }
+        .loader-log::-webkit-scrollbar-thumb { background: #2a4a55; border-radius: 10px; }
+        .loader-log .log-line { opacity: 0; animation: logFade 0.3s forwards; }
+        .loader-log .log-line.success { color: #8effb2; }
+        .loader-log .log-line.warning { color: #ffd966; }
+        .loader-log .log-line.system { color: #6ae2ff; }
+        @keyframes logFade {
+            from { opacity: 0; transform: translateX(-8px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- VISTA PROTOCOLO --- */
+        .protocol-view {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .protocol-top {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+        .protocol-ascii {
+            background: #050a0e;
+            border: 1px solid #1a2a30;
+            border-radius: 8px;
+            padding: 15px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            line-height: 1.2;
+            color: #6ae2ff;
+            white-space: pre;
+            min-width: 140px;
+            text-shadow: 0 0 8px rgba(0, 200, 255, 0.15);
+            flex-shrink: 0;
+        }
+        .protocol-header {
+            flex: 1;
+            border-bottom: 1px dashed #2a4a55;
+            padding-bottom: 15px;
+        }
+        .protocol-header h2 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: #e8f5f9;
+            margin: 0 0 6px 0;
+            letter-spacing: 2px;
+        }
+        .protocol-header h2 span { color: #6ae2ff; }
+        .status-badge {
+            color: #8effb2;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            background: #0f1a20;
+            padding: 4px 16px;
+            border: 1px solid #1a3a40;
+            border-radius: 20px;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        .step-list {
+            list-style: none;
+            padding: 0;
+            margin: 25px 0 30px 0;
+        }
+        .step-list li {
+            background: #0a1218;
+            border-left: 3px solid #2a4a55;
+            padding: 16px 20px;
+            margin-bottom: 14px;
+            border-radius: 2px;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: stepReveal 0.4s forwards;
+        }
+        .step-list li:nth-child(1) { animation-delay: 0.1s; }
+        .step-list li:nth-child(2) { animation-delay: 0.25s; }
+        .step-list li:nth-child(3) { animation-delay: 0.4s; }
+        .step-list li:nth-child(4) { animation-delay: 0.55s; }
+        .step-list li:nth-child(5) { animation-delay: 0.7s; }
+        @keyframes stepReveal { to { opacity: 1; transform: translateY(0); } }
+        .step-list li:hover { border-left-color: #6ae2ff; background: #101c24; }
+        .step-num { color: #6ae2ff; font-weight: bold; margin-right: 12px; font-size: 0.8rem; letter-spacing: 1px; }
+        .step-list li strong { color: #e0f0f5; display: inline-block; margin-right: 6px; }
+
+        .btn-volver {
+            background: transparent;
+            color: #4a7a8a;
+            border: 1px solid #1f2f35;
+            padding: 14px 0;
+            font-family: 'Courier New', monospace;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border-radius: 2px;
+            font-size: 0.85rem;
+        }
+        .btn-volver:hover {
+            background: #1a2a30;
+            color: #b0dae5;
+            border-color: #3a6a7a;
+            box-shadow: 0 0 20px rgba(0, 180, 255, 0.05);
+        }
+
+        /* --- FOOTER --- */
+        .sys-footer {
+            margin-top: 30px;
+            padding-top: 18px;
+            border-top: 1px solid #121e24;
+            font-size: 0.7rem;
+            color: #2a4a55;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .sys-footer kbd {
+            background: #0b1318;
+            border: 1px solid #1a2a30;
+            padding: 2px 10px;
+            border-radius: 3px;
+            color: #4a7a8a;
+            font-size: 0.7rem;
+        }
+
+        /* --- MODAL LOGROS --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: #0b1318;
+            border: 1px solid #2a4a55;
+            border-radius: 12px;
+            max-width: 550px;
+            width: 100%;
+            padding: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            animation: fadeIn 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-box h2 {
+            color: #e8f5f9;
+            font-weight: 300;
+            letter-spacing: 3px;
+            border-bottom: 1px solid #1a2a30;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-box h2 .close {
+            background: none;
+            border: none;
+            color: #4a7a8a;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 0 8px;
+        }
+        .modal-box h2 .close:hover { color: #fff; transform: scale(1.1); }
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            background: #0a1218;
+            border-left: 3px solid #2a4a55;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+        .achievement-item.unlocked { border-left-color: #ffd966; background: #121c22; }
+        .achievement-item.locked { opacity: 0.5; filter: grayscale(0.8); }
+        .achievement-item .icon { font-size: 1.8rem; width: 40px; text-align: center; }
+        .achievement-item .info { flex: 1; }
+        .achievement-item .info .name { color: #e0f0f5; font-weight: 500; }
+        .achievement-item .info .desc { color: #7a9aa5; font-size: 0.8rem; }
+        .achievement-item .status-icon { font-size: 1.3rem; }
+
+        /* --- TOAST NOTIFICACIÓN --- */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 340px;
+        }
+        .toast {
+            background: #0f1a20;
+            border: 1px solid #ffd966;
+            border-left: 6px solid #ffd966;
+            padding: 16px 22px;
+            border-radius: 6px;
+            color: #e0f0f5;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            animation: slideUp 0.4s ease;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+        .toast .title { color: #ffd966; font-weight: bold; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* --- ANIMACIONES GLOBALES --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hidden { display: none !important; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 600px) {
+            .terminal-wrapper { padding: 20px 12px; }
+            .sys-header h1 { font-size: 1.8rem; letter-spacing: 4px; }
+            .menu-card { flex-direction: column; align-items: stretch; }
+            .btn-activar { width: 100%; text-align: center; }
+            .protocol-top { flex-direction: column; align-items: center; }
+            .protocol-ascii { font-size: 0.65rem; min-width: 100px; }
+            .sys-header .left { flex-wrap: wrap; }
+            .modal-box { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="terminal-wrapper" role="main" aria-label="Terminal de control Fenrir">
+
+        <header class="sys-header">
+            <div class="left">
+                <h1>⎈ Fenrir</h1>
+                <div class="subtitle">
+                    <span class="dot"></span>
+                    <span>v.3.0</span>
+                </div>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <button class="btn-logros" id="btnLogros">🏆 Logros <span class="badge" id="logrosBadge">0</span></button>
+            </div>
+        </header>
+
+        <!-- ===== MENÚ PRINCIPAL ===== -->
+        <div id="main-menu" class="menu-grid" role="menu">
+            <!-- Generado por JS -->
+        </div>
+
+        <!-- ===== LOADER ===== -->
+        <div id="activation-loader" class="activation-loader">
+            <div class="loader-title">⟳ Inicializando</div>
+            <div class="loader-sub">Cargando módulo táctico...</div>
+            <div class="progress-track">
+                <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+            </div>
+            <div id="loader-log" class="loader-log"></div>
+        </div>
+
+        <!-- ===== VISTA PROTOCOLO ===== -->
+        <div id="protocol-view" class="protocol-view">
+            <div class="protocol-top">
+                <pre id="protocol-ascii" class="protocol-ascii">   __      __
+  /  \    /  \
+  \   \/\/   /
+   \        /
+    \______/
+     V    V</pre>
+                <div class="protocol-header">
+                    <h2 id="proto-title">🐺 <span>Fenrir-Furia</span></h2>
+                    <div class="status-badge" id="proto-status">[ ONLINE ]</div>
+                </div>
+            </div>
+            <ul id="proto-steps" class="step-list"></ul>
+            <button class="btn-volver" onclick="volverMenu()">⏻ Apagar Protocolo</button>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="sys-footer">
+            <span>⌨️ <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> activar · <kbd>ESC</kbd> volver</span>
+            <span id="sys-clock">⏱️ --:--:--</span>
+        </div>
+    </div>
+
+    <!-- ===== MODAL LOGROS ===== -->
+    <div id="modalLogros" class="modal-overlay">
+        <div class="modal-box">
+            <h2>🏆 Logros Desbloqueados
+                <button class="close" id="closeModal">&times;</button>
+            </h2>
+            <div id="logrosList"></div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // --- PROTOCOLOS ---
+            const PROTOCOLS = {
+                furia: {
+                    id: 'furia',
+                    icon: '🐺',
+                    title: 'Fenrir-Furia',
+                    subtitle: 'Objetivo: Dominación Deportiva (Fútbol)',
+                    status: 'MODO SALVAJE',
+                    ascii: `   __      __\n  /  \\    /  \\\n  \\   \\/\\/   /\n   \\        /\n    \\______/\n     V    V`,
+                    steps: [
+                        '<strong>El Disparador.</strong> Ajusta tus agujetas al máximo nivel de tensión. Da tres golpes firmes en tus muslos.',
+                        '<strong>Bloqueo Mental.</strong> Apaga la empatía deportiva. No pidas perdón si chocas, no te desanimes si fallas. Reinicia al instante.',
+                        '<strong>Fijación de Objetivo.</strong> Tu único propósito es el balón y el espacio. Eres incansable, agresivo y rápido.',
+                        '<strong>Ejecución.</strong> Entra a la cancha. Domina.'
+                    ],
+                    logLines: [
+                        '[SISTEMA] Conectando con la red neuronal motora...',
+                        '[OK] Reflejos potenciados al 98%.',
+                        '[ADVERTENCIA] Empatía deportiva desactivada.',
+                        '[OK] Protocolo Furia listo. ¡A la carga!'
+                    ]
+                },
+                mente: {
+                    id: 'mente',
+                    icon: '🧠',
+                    title: 'Fenrir-Mente',
+                    subtitle: 'Objetivo: Precisión Analítica (Exámenes)',
+                    status: 'MODO ANÁLISIS',
+                    ascii: `   __      __\n  /  \\    /  \\\n  \\   \\/\\/   /\n   \\   __   /\n    \\ /  \\ /\n     V    V`,
+                    steps: [
+                        '<strong>El Disparador.</strong> Da tres toques precisos con tu bolígrafo en el borde del escritorio antes de escribir.',
+                        '<strong>Aislamiento Acústico.</strong> Ignora los suspiros, quejas o el pánico de tus compañeros en el salón. Su estrés no es compatible con tu sistema.',
+                        '<strong>Escaneo Táctico.</strong> Lee el examen completo antes de responder. Identifica patrones, clasifica preguntas fáciles y difíciles.',
+                        '<strong>Ejecución.</strong> Postura estática. Responde con frialdad y exactitud quirúrgica.'
+                    ],
+                    logLines: [
+                        '[SISTEMA] Sincronizando lóbulos frontales...',
+                        '[OK] Umbral de concentración elevado.',
+                        '[INFO] Filtro de ruido ambiental activado.',
+                        '[OK] Protocolo Mente en espera de análisis.'
+                    ]
+                },
+                apex: {
+                    id: 'apex',
+                    icon: '👑',
+                    title: 'Fenrir-Apex',
+                    subtitle: 'Objetivo: Presencia y Carisma Absoluto',
+                    status: 'MODO ALFA',
+                    ascii: `    .-.\n   (   )\n    '-'\n   __      __\n  /  \\    /  \\\n  \\   \\/\\/   /\n   \\        /\n    \\______/\n     V    V`,
+                    steps: [
+                        '<strong>El Disparador.</strong> Reproduce tu pista de audio asignada. Al llegar al lugar, acomoda el cuello de tu chaqueta/camisa y alza la barbilla.',
+                        '<strong>Dominación Espacial.</strong> Entra ocupando espacio. Espalda recta, hombros relajados. Camina lento y no busques contacto visual por aprobación.',
+                        '<strong>Regla de los 2 Segundos.</strong> Cuando te hablen, haz una pausa de 2 segundos sosteniendo la mirada antes de responder.',
+                        '<strong>Control Vocal.</strong> Habla un 20% más lento de lo normal. Termina tus frases con un tono de voz descendente (.).'
+                    ],
+                    logLines: [
+                        '[SISTEMA] Calibrando postura y cadencia verbal...',
+                        '[OK] Modulación vocal optimizada.',
+                        '[OK] Mapeo de espacio social completado.',
+                        '[OK] Protocolo Apex activo. Liderazgo asegurado.'
+                    ]
+                }
+            };
+
+            // --- DEFINICIÓN DE LOGROS ---
+            const ACHIEVEMENTS = [
+                { id: 'first_activation', name: 'Primera Activación', desc: 'Activa cualquier protocolo por primera vez.', icon: '🌟' },
+                { id: 'furia_master', name: 'Maestro Furia', desc: 'Activa Fenrir-Furia 5 veces.', icon: '🐺' },
+                { id: 'mente_master', name: 'Maestro Mente', desc: 'Activa Fenrir-Mente 5 veces.', icon: '🧠' },
+                { id: 'apex_master', name: 'Maestro Apex', desc: 'Activa Fenrir-Apex 5 veces.', icon: '👑' },
+                { id: 'trifecta', name: 'Trifecta', desc: 'Activa los 3 protocolos en un mismo día.', icon: '🔥' }
+            ];
+
+            // --- DOM REFS ---
+            const menuContainer = document.getElementById('main-menu');
+            const loaderContainer = document.getElementById('activation-loader');
+            const progressBar = document.getElementById('progress-bar');
+            const logContainer = document.getElementById('loader-log');
+            const protocolView = document.getElementById('protocol-view');
+            const protoTitle = document.getElementById('proto-title');
+            const protoStatus = document.getElementById('proto-status');
+            const protoSteps = document.getElementById('proto-steps');
+            const protoAscii = document.getElementById('protocol-ascii');
+            const clockDisplay = document.getElementById('sys-clock');
+            const modal = document.getElementById('modalLogros');
+            const logrosList = document.getElementById('logrosList');
+            const logrosBadge = document.getElementById('logrosBadge');
+            const btnLogros = document.getElementById('btnLogros');
+            const closeModal = document.getElementById('closeModal');
+            const toastContainer = document.getElementById('toastContainer');
+
+            // --- ESTADO ---
+            let currentProtocolId = null;
+            let progressValue = 0;
+            let logIndex = 0;
+
+            // --- GESTIÓN DE ESTADÍSTICAS (Feature 3) ---
+            function getStats() {
+                try {
+                    const raw = localStorage.getItem('fenrir_stats');
+                    return raw ? JSON.parse(raw) : {};
+                } catch { return {}; }
+            }
+
+            function saveStats(stats) {
+                try { localStorage.setItem('fenrir_stats', JSON.stringify(stats)); } catch {}
+            }
+
+            function incrementStat(protocolId) {
+                const stats = getStats();
+                if (!stats[protocolId]) stats[protocolId] = { count: 0, lastUsed: null };
+                stats[protocolId].count += 1;
+                stats[protocolId].lastUsed = new Date().toISOString();
+                saveStats(stats);
+                return stats;
+            }
+
+            function getToday() {
+                return new Date().toISOString().split('T')[0];
+            }
+
+            // --- GESTIÓN DE LOGROS (Feature 9) ---
+            function getAchievements() {
+                try {
+                    const raw = localStorage.getItem('fenrir_achievements');
+                    return raw ? JSON.parse(raw) : {};
+                } catch { return {}; }
+            }
+
+            function saveAchievements(data) {
+                try { localStorage.setItem('fenrir_achievements', JSON.stringify(data)); } catch {}
+            }
+
+            function unlockAchievement(id) {
+                const data = getAchievements();
+                if (data[id]) return false;
+                data[id] = true;
+                saveAchievements(data);
+                return true;
+            }
+
+            function isUnlocked(id) {
+                const data = getAchievements();
+                return !!data[id];
+            }
+
+            function getUnlockedCount() {
+                return ACHIEVEMENTS.filter(a => isUnlocked(a.id)).length;
+            }
+
+            // --- VERIFICAR LOGROS (se llama tras cada activación) ---
+            function checkAchievements(protocolId) {
+                const stats = getStats();
+                const today = getToday();
+                let unlocked = [];
+
+                // Primera activación
+                const total = Object.values(stats).reduce((sum, s) => sum + s.count, 0);
+                if (total >= 1 && !isUnlocked('first_activation')) {
+                    if (unlockAchievement('first_activation')) unlocked.push('first_activation');
+                }
+
+                // Maestros (count >= 5)
+                if (stats.furia && stats.furia.count >= 5 && !isUnlocked('furia_master')) {
+                    if (unlockAchievement('furia_master')) unlocked.push('furia_master');
+                }
+                if (stats.mente && stats.mente.count >= 5 && !isUnlocked('mente_master')) {
+                    if (unlockAchievement('mente_master')) unlocked.push('mente_master');
+                }
+                if (stats.apex && stats.apex.count >= 5 && !isUnlocked('apex_master')) {
+                    if (unlockAchievement('apex_master')) unlocked.push('apex_master');
+                }
+
+                // Trifecta: los 3 activados hoy
+                const allIds = ['furia', 'mente', 'apex'];
+                const allToday = allIds.every(id => {
+                    if (!stats[id] || !stats[id].lastUsed) return false;
+                    const date = new Date(stats[id].lastUsed).toISOString().split('T')[0];
+                    return date === today;
+                });
+                if (allToday && !isUnlocked('trifecta')) {
+                    if (unlockAchievement('trifecta')) unlocked.push('trifecta');
+                }
+
+                // Mostrar notificaciones para cada nuevo logro
+                unlocked.forEach(id => {
+                    const ach = ACHIEVEMENTS.find(a => a.id === id);
+                    if (ach) mostrarToast(`🏆 ¡Logro desbloqueado!`, `${ach.icon} ${ach.name}: ${ach.desc}`);
+                });
+
+                if (unlocked.length > 0) {
+                    actualizarBadge();
+                }
+            }
+
+            // --- TOAST (notificación) ---
+            function mostrarToast(titulo, mensaje) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.innerHTML = `<div class="title">${titulo}</div><div>${mensaje}</div>`;
+                toastContainer.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(20px)';
+                    setTimeout(() => toast.remove(), 400);
+                }, 6000);
+            }
+
+            // --- ACTUALIZAR BADGE DE LOGROS ---
+            function actualizarBadge() {
+                const count = getUnlockedCount();
+                logrosBadge.textContent = count;
+                logrosBadge.style.display = count > 0 ? 'inline' : 'none';
+            }
+
+            // --- RENDER MODAL LOGROS ---
+            function renderModal() {
+                logrosList.innerHTML = '';
+                ACHIEVEMENTS.forEach(ach => {
+                    const unlocked = isUnlocked(ach.id);
+                    const div = document.createElement('div');
+                    div.className = `achievement-item ${unlocked ? 'unlocked' : 'locked'}`;
+                    div.innerHTML = `
+                        <div class="icon">${ach.icon}</div>
+                        <div class="info">
+                            <div class="name">${ach.name}</div>
+                            <div class="desc">${ach.desc}</div>
+                        </div>
+                        <div class="status-icon">${unlocked ? '✅' : '🔒'}</div>
+                    `;
+                    logrosList.appendChild(div);
+                });
+            }
+
+            // --- RENDER MENÚ PRINCIPAL (con stats) ---
+            function renderMenu() {
+                const stats = getStats();
+                menuContainer.innerHTML = '';
+                for (const key in PROTOCOLS) {
+                    const p = PROTOCOLS[key];
+                    const stat = stats[p.id] || { count: 0, lastUsed: null };
+                    const lastUsedStr = stat.lastUsed ? new Date(stat.lastUsed).toLocaleDateString('es-ES') : 'Nunca';
+
+                    const card = document.createElement('div');
+                    card.className = 'menu-card';
+                    card.setAttribute('role', 'menuitem');
+                    card.innerHTML = `
+                        <div class="menu-info">
+                            <h2>${p.icon} ${p.title} <small>${p.subtitle}</small></h2>
+                            <div class="menu-stats">
+                                <span>Activaciones: <span class="count">${stat.count}</span></span>
+                                <span>Último uso: ${lastUsedStr}</span>
+                            </div>
+                        </div>
+                        <button class="btn-activar" data-id="${p.id}" aria-label="Activar ${p.title}">▶ Activar</button>
+                    `;
+                    menuContainer.appendChild(card);
+
+                    const btn = card.querySelector('.btn-activar');
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        iniciarActivacion(p.id);
+                    });
+                }
+                actualizarBadge();
+            }
+
+            // --- ASCII NEUTRO (para el menú) ---
+            const ASCII_NEUTRAL = `   __      __\n  /  \\    /  \\\n  \\   \\/\\/   /\n   \\        /\n    \\______/\n     V    V`;
+
+            // --- INICIAR ACTIVACIÓN (Loader) ---
+            function iniciarActivacion(id) {
+                if (document.querySelector('.progress-bar')?.style?.width === '100%') return;
+
+                const proto = PROTOCOLS[id];
+                if (!proto) return;
+
+                currentProtocolId = id;
+
+                // Ocultar menú y vista, mostrar loader
+                menuContainer.style.display = 'none';
+                protocolView.style.display = 'none';
+                loaderContainer.style.display = 'flex';
+
+                // Resetear loader
+                progressValue = 0;
+                logIndex = 0;
+                progressBar.style.width = '0%';
+                logContainer.innerHTML = '';
+                addLogLine('[SISTEMA] Inicializando secuencia de activación...', 'system');
+
+                let progressInterval = setInterval(() => {
+                    progressValue += Math.floor(Math.random() * 8) + 2;
+                    if (progressValue >= 100) {
+                        progressValue = 100;
+                        clearInterval(progressInterval);
+                        progressBar.style.width = '100%';
+
+                        // === ACTIVACIÓN COMPLETADA ===
+                        // 1. Incrementar estadística
+                        incrementStat(id);
+
+                        // 2. Verificar logros
+                        checkAchievements(id);
+
+                        // 3. Mostrar protocolo
+                        setTimeout(() => {
+                            mostrarProtocolo(id);
+                        }, 400);
+                    }
+                    progressBar.style.width = progressValue + '%';
+
+                    // Logs progresivos
+                    if (progressValue > 30 && logIndex === 1) {
+                        addLogLine(proto.logLines[0] || '[INFO] Cargando módulos...', 'system');
+                        logIndex = 2;
+                    }
+                    if (progressValue > 60 && logIndex === 2) {
+                        addLogLine(proto.logLines[1] || '[OK] Recursos asignados.', 'success');
+                        logIndex = 3;
+                    }
+                    if (progressValue > 80 && logIndex === 3) {
+                        addLogLine(proto.logLines[2] || '[ADVERTENCIA] Verificando integridad.', 'warning');
+                        logIndex = 4;
+                    }
+                    if (progressValue >= 100 && logIndex === 4) {
+                        addLogLine(proto.logLines[3] || '[OK] Protocolo listo.', 'success');
+                        logIndex = 5;
+                    }
+                }, 150);
+            }
+
+            function addLogLine(text, type = 'system') {
+                const line = document.createElement('div');
+                line.className = `log-line ${type}`;
+                line.textContent = text;
+                logContainer.appendChild(line);
+                logContainer.scrollTop = logContainer.scrollHeight;
+            }
+
+            // --- MOSTRAR PROTOCOLO (con ASCII dinámico) ---
+            function mostrarProtocolo(id) {
+                const proto = PROTOCOLS[id];
+                if (!proto) return;
+
+                loaderContainer.style.display = 'none';
+                protocolView.style.display = 'block';
+
+                // Título y estado
+                protoTitle.innerHTML = `${proto.icon} <span>${proto.title}</span>`;
+                protoStatus.textContent = `[ ${proto.status} ]`;
+                protoStatus.style.color = '#8effb2';
+
+                // ASCII dinámico (Feature 5)
+                protoAscii.textContent = proto.ascii || ASCII_NEUTRAL;
+
+                // Pasos
+                protoSteps.innerHTML = '';
+                proto.steps.forEach((step, index) => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span class="step-num">PASO ${index + 1}:</span> ${step}`;
+                    protoSteps.appendChild(li);
+                });
+
+                try { sessionStorage.setItem('fenrir_active', id); } catch {}
+            }
+
+            // --- VOLVER AL MENÚ ---
+            window.volverMenu = function() {
+                loaderContainer.style.display = 'none';
+                protocolView.style.display = 'none';
+                menuContainer.style.display = 'grid';
+                // Re-renderizar menú para actualizar stats
+                renderMenu();
+                try { sessionStorage.removeItem('fenrir_active'); } catch {}
+                currentProtocolId = null;
+                progressValue = 0;
+                logIndex = 0;
+                progressBar.style.width = '0%';
+                logContainer.innerHTML = '';
+            };
+
+            // --- RELOJ ---
+            function updateClock() {
+                const now = new Date();
+                clockDisplay.textContent = `⏱️ ${now.toLocaleTimeString('es-ES', { hour12: false })}`;
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            // --- TECLADO ---
+            document.addEventListener('keydown', (e) => {
+                if (menuContainer.style.display !== 'none') {
+                    const ids = Object.keys(PROTOCOLS);
+                    if (e.key === '1' && ids[0]) { e.preventDefault(); iniciarActivacion(ids[0]); }
+                    if (e.key === '2' && ids[1]) { e.preventDefault(); iniciarActivacion(ids[1]); }
+                    if (e.key === '3' && ids[2]) { e.preventDefault(); iniciarActivacion(ids[2]); }
+                }
+                if (e.key === 'Escape') {
+                    if (protocolView.style.display === 'block' || loaderContainer.style.display === 'flex') {
+                        e.preventDefault();
+                        volverMenu();
+                    }
+                    if (modal.classList.contains('active')) {
+                        e.preventDefault();
+                        modal.classList.remove('active');
+                    }
+                }
+            });
+
+            // --- MODAL LOGROS ---
+            btnLogros.addEventListener('click', () => {
+                renderModal();
+                modal.classList.add('active');
+            });
+            closeModal.addEventListener('click', () => modal.classList.remove('active'));
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+
+            // --- RESTAURAR ESTADO (persistencia) ---
+            function restaurarEstado() {
+                try {
+                    const activeId = sessionStorage.getItem('fenrir_active');
+                    if (activeId && PROTOCOLS[activeId]) {
+                        menuContainer.style.display = 'none';
+                        loaderContainer.style.display = 'none';
+                        protocolView.style.display = 'block';
+                        const proto = PROTOCOLS[activeId];
+                        protoTitle.innerHTML = `${proto.icon} <span>${proto.title}</span>`;
+                        protoStatus.textContent = `[ ${proto.status} ]`;
+                        protoStatus.style.color = '#8effb2';
+                        protoAscii.textContent = proto.ascii || ASCII_NEUTRAL;
+                        protoSteps.innerHTML = '';
+                        proto.steps.forEach((step, index) => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `<span class="step-num">PASO ${index + 1}:</span> ${step}`;
+                            protoSteps.appendChild(li);
+                        });
+                        currentProtocolId = activeId;
+                        actualizarBadge();
+                        return;
+                    }
+                } catch {}
+                menuContainer.style.display = 'grid';
+                loaderContainer.style.display = 'none';
+                protocolView.style.display = 'none';
+                renderMenu();
+            }
+
+            // --- INICIALIZACIÓN ---
+            restaurarEstado();
+
+        })();
+    </script>
+</body>
+</html>
